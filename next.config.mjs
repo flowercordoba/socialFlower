@@ -24,10 +24,4 @@ const nextConfig = {
   },
 };
 
-console.log(
-  "NEXT_PUBLIC_UPLOADTHING_APP_ID en configuración:",
-  process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID,
-);
-console.log("Configuración de imágenes:", nextConfig.images);
-
 export default nextConfig;
