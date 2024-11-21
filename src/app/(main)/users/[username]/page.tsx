@@ -53,9 +53,7 @@ export default async function Page({ params: { username } }: PageProps) {
 
   if (!loggedInUser) {
     return (
-      <p className="text-destructive">
-        You&apos;re not authorized to view this page.
-      </p>
+      <p className="text-destructive">No estas autorizado a ver esta pagina.</p>
     );
   }
 
@@ -67,7 +65,7 @@ export default async function Page({ params: { username } }: PageProps) {
         <UserProfile user={user} loggedInUserId={loggedInUser.id} />
         <div className="rounded-2xl bg-card p-5 shadow-sm">
           <h2 className="text-center text-2xl font-bold">
-            {user.displayName}&apos;s posts
+            Publicaciones de {user.displayName}
           </h2>
         </div>
         <UserPosts userId={user.id} />
