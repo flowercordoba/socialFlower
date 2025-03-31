@@ -5,8 +5,8 @@ services:
     image: postgres:latest
     container_name: postgres-container
     environment:
-      POSTGRES_USER: arturo
-      POSTGRES_PASSWORD: arturo
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
       POSTGRES_DB: socialapp
     ports:
       - "5432:5432"

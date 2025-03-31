@@ -4,15 +4,19 @@ import FollowerCount from "@/components/FollowerCount";
 import Linkify from "@/components/Linkify";
 import TrendsSidebar from "@/components/TrendsSidebar";
 import UserAvatar from "@/components/UserAvatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import prisma from "@/lib/prisma";
 import { FollowerInfo, getUserDataSelect, UserData } from "@/lib/types";
 import { formatNumber } from "@/lib/utils";
 import { formatDate } from "date-fns";
 import { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import EditProfileButton from "./EditProfileButton";
 import UserPosts from "./UserPosts";
+import UserMedia from "./UserMedia";
+import coverPlaceholder from "@/assets/cover-placeholder.png";
 
 interface PageProps {
   params: { username: string };
@@ -66,11 +70,19 @@ export default async function Page({ params: { username } }: PageProps) {
       <div className="w-full min-w-0 space-y-5">
         <UserProfile user={user} loggedInUserId={loggedInUser.id} />
         <div className="rounded-2xl bg-card p-5 shadow-sm">
-          <h2 className="text-center text-2xl font-bold">
-            {user.displayName}&apos;s posts
-          </h2>
+          <Tabs defaultValue="posts">
+            <TabsList>
+              <TabsTrigger value="posts">Posts</TabsTrigger>
+              <TabsTrigger value="multimedia">Multimedia</TabsTrigger>
+            </TabsList>
+            <TabsContent value="posts">
+              <UserPosts userId={user.id} />
+            </TabsContent>
+            <TabsContent value="multimedia">
+              <UserMedia userId={user.id} />
+            </TabsContent>
+          </Tabs>
         </div>
-        <UserPosts userId={user.id} />
       </div>
       <TrendsSidebar />
     </main>
@@ -92,11 +104,20 @@ async function UserProfile({ user, loggedInUserId }: UserProfileProps) {
 
   return (
     <div className="h-fit w-full space-y-5 rounded-2xl bg-card p-5 shadow-sm">
-      <UserAvatar
-        avatarUrl={user.avatarUrl}
-        size={250}
-        className="mx-auto size-full max-h-60 max-w-60 rounded-full"
+      <Image
+        src={user.coverUrl || coverPlaceholder}
+        alt="Cover"
+        width={800}
+        height={200}
+        className="h-48 w-full rounded-sm object-cover"
       />
+      <div className="relative flex justify-center">
+        <UserAvatar
+          avatarUrl={user.avatarUrl}
+          size={140}
+          className="-mt-[90px] border-4 border-background"
+        />
+      </div>
       <div className="flex flex-wrap gap-3 sm:flex-nowrap">
         <div className="me-auto space-y-3">
           <div>

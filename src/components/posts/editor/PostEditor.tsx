@@ -170,22 +170,93 @@ function AttachmentPreviews({
   attachments,
   removeAttachment,
 }: AttachmentPreviewsProps) {
-  return (
-    <div
-      className={cn(
-        "flex flex-col gap-3",
-        attachments.length > 1 && "sm:grid sm:grid-cols-2",
-      )}
-    >
-      {attachments.map((attachment) => (
+  const count = attachments.length;
+
+  if (count === 1) {
+    return (
+      <div className="overflow-hidden rounded-xl">
         <AttachmentPreview
-          key={attachment.file.name}
-          attachment={attachment}
-          onRemoveClick={() => removeAttachment(attachment.file.name)}
+          attachment={attachments[0]}
+          onRemoveClick={() => removeAttachment(attachments[0].file.name)}
         />
-      ))}
-    </div>
-  );
+      </div>
+    );
+  }
+
+  if (count === 2) {
+    return (
+      <div className="grid grid-cols-2 gap-2">
+        {attachments.map((a) => (
+          <AttachmentPreview
+            key={a.file.name}
+            attachment={a}
+            onRemoveClick={() => removeAttachment(a.file.name)}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (count === 3) {
+    return (
+      <div className="grid grid-cols-2 gap-2">
+        <div className="col-span-2">
+          <AttachmentPreview
+            attachment={attachments[0]}
+            onRemoveClick={() => removeAttachment(attachments[0].file.name)}
+          />
+        </div>
+        {attachments.slice(1).map((a) => (
+          <AttachmentPreview
+            key={a.file.name}
+            attachment={a}
+            onRemoveClick={() => removeAttachment(a.file.name)}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (count === 4) {
+    return (
+      <div className="grid grid-cols-2 gap-2">
+        {attachments.map((a) => (
+          <AttachmentPreview
+            key={a.file.name}
+            attachment={a}
+            onRemoveClick={() => removeAttachment(a.file.name)}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (count === 5) {
+    return (
+      <div className="grid gap-2">
+        <div className="grid grid-cols-2 gap-2">
+          {attachments.slice(0, 2).map((a) => (
+            <AttachmentPreview
+              key={a.file.name}
+              attachment={a}
+              onRemoveClick={() => removeAttachment(a.file.name)}
+            />
+          ))}
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {attachments.slice(2).map((a) => (
+            <AttachmentPreview
+              key={a.file.name}
+              attachment={a}
+              onRemoveClick={() => removeAttachment(a.file.name)}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 interface AttachmentPreviewProps {
@@ -194,32 +265,32 @@ interface AttachmentPreviewProps {
 }
 
 function AttachmentPreview({
-  attachment: { file, mediaId, isUploading },
+  attachment: { file, isUploading },
   onRemoveClick,
 }: AttachmentPreviewProps) {
   const src = URL.createObjectURL(file);
 
   return (
     <div
-      className={cn("relative mx-auto size-fit", isUploading && "opacity-50")}
+      className={cn(
+        "relative aspect-square w-full overflow-hidden rounded-xl bg-muted",
+        isUploading && "opacity-50",
+      )}
     >
       {file.type.startsWith("image") ? (
-        <Image
-          src={src}
-          alt="Attachment preview"
-          width={500}
-          height={500}
-          className="size-fit max-h-[30rem] rounded-2xl"
-        />
+        <Image src={src} alt="Preview" fill className="object-cover" />
       ) : (
-        <video controls className="size-fit max-h-[30rem] rounded-2xl">
-          <source src={src} type={file.type} />
-        </video>
+        <video
+          src={src}
+          className="absolute inset-0 h-full w-full object-cover"
+          controls
+        />
       )}
+
       {!isUploading && (
         <button
           onClick={onRemoveClick}
-          className="absolute right-3 top-3 rounded-full bg-foreground p-1.5 text-background transition-colors hover:bg-foreground/60"
+          className="absolute right-2 top-2 rounded-full bg-foreground p-1.5 text-background transition-colors hover:bg-foreground/60"
         >
           <X size={20} />
         </button>

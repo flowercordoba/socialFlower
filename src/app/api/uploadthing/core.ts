@@ -74,6 +74,39 @@ export const fileRouter = {
 
       return { mediaId: media.id };
     }),
+  cover: f({
+    image: { maxFileSize: "1MB" },
+  })
+    .middleware(async () => {
+      const { user } = await validateRequest();
+
+      if (!user) throw new UploadThingError("Unauthorized");
+
+      return { user };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      const oldCoverUrl = metadata.user.coverUrl;
+      if (oldCoverUrl) {
+        const key = oldCoverUrl.split(
+          `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`,
+        )[1];
+        await new UTApi().deleteFiles(key);
+      }
+
+      const newCoverUrl = file.url.replace(
+        "/f/",
+        `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`,
+      );
+
+      await prisma.user.update({
+        where: { id: metadata.user.id },
+        data: {
+          coverUrl: newCoverUrl,
+        },
+      });
+
+      return { coverUrl: newCoverUrl };
+    }),
 } satisfies FileRouter;
 
 export type AppFileRouter = typeof fileRouter;
