@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import Bookmarks from "./Bookmarks";
 
 export const metadata: Metadata = {
-  title: "Bookmarks",
+  title: "Guardados",
 };
 
 export default function Page() {
