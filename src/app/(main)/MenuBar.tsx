@@ -2,7 +2,7 @@ import { validateRequest } from "@/auth";
 import { Button } from "@/components/ui/button";
 import prisma from "@/lib/prisma";
 import streamServerClient from "@/lib/stream";
-import { Bookmark, Home, UserIcon } from "lucide-react";
+import { Bookmark, Home, UserIcon, Users } from "lucide-react";
 import Link from "next/link";
 import MessagesButton from "./MessagesButton";
 import NotificationsButton from "./NotificationsButton";
@@ -17,12 +17,7 @@ export default async function MenuBar({ className }: MenuBarProps) {
   if (!user) return null;
 
   const [unreadNotificationsCount, unreadMessagesCount] = await Promise.all([
-    prisma.notification.count({
-      where: {
-        recipientId: user.id,
-        read: false,
-      },
-    }),
+    prisma.notification.count({ where: { recipientId: user.id, read: false } }),
     (await streamServerClient.getUnreadCount(user.id)).total_unread_count,
   ]);
 
@@ -63,6 +58,17 @@ export default async function MenuBar({ className }: MenuBarProps) {
         <Link href={`/users/${user.username}`}>
           <UserIcon />
           <span className="hidden lg:inline">Perfil</span>
+        </Link>
+      </Button>
+      <Button
+        variant="ghost"
+        className="hidden items-center justify-start gap-3 lg:flex"
+        title="Followers"
+        asChild
+      >
+        <Link href={`/users/${user.username}/followers`}>
+          <Users />
+          <span className="hidden lg:inline">Seguidores</span>
         </Link>
       </Button>
     </div>

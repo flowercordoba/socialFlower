@@ -9,9 +9,13 @@ import Link from "next/link";
 
 interface MessagesButtonProps {
   initialState: MessageCountInfo;
+  iconOnly?: boolean;
 }
 
-export default function MessagesButton({ initialState }: MessagesButtonProps) {
+export default function MessagesButton({
+  initialState,
+  iconOnly,
+}: MessagesButtonProps) {
   const { data } = useQuery({
     queryKey: ["unread-messages-count"],
     queryFn: () =>
@@ -24,7 +28,7 @@ export default function MessagesButton({ initialState }: MessagesButtonProps) {
     <Button
       variant="ghost"
       className="flex items-center justify-start gap-3"
-      title="Messages"
+      title="Mensajes"
       asChild
     >
       <Link href="/messages">
@@ -36,7 +40,7 @@ export default function MessagesButton({ initialState }: MessagesButtonProps) {
             </span>
           )}
         </div>
-        <span className="hidden lg:inline">Mensajes</span>
+        {!iconOnly && <span className="hidden lg:inline">Mensajes</span>}
       </Link>
     </Button>
   );

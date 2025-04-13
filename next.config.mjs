@@ -5,7 +5,7 @@ const nextConfig = {
     },
   },
   serverExternalPackages: ["@node-rs/argon2"],
-  images: {
+  /* images: {
     remotePatterns: [
       {
         protocol: "https",
@@ -13,6 +13,9 @@ const nextConfig = {
         pathname: `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID + "/*" || "*"}`,
       },
     ],
+  }, */
+  images: {
+    domains: ["utfs.io"],
   },
   rewrites: () => {
     return [

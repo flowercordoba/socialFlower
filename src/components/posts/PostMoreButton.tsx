@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import DeletePostDialog from "./DeletePostDialog";
+import { useToast } from "@/components/ui/use-toast";
 
 interface PostMoreButtonProps {
   post: PostData;
@@ -22,6 +23,7 @@ export default function PostMoreButton({
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isPinned, setIsPinned] = useState(false);
   const [isPinLoading, setIsPinLoading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     async function fetchPinStatus() {
@@ -43,15 +45,25 @@ export default function PostMoreButton({
         const res = await fetch(`/api/posts/${post.id}/pin`, {
           method: "DELETE",
         });
-        if (res.ok) setIsPinned(false);
+        if (res.ok) {
+          setIsPinned(false);
+          toast({ description: "Post desfijado del perfil." });
+        }
       } else {
         const res = await fetch(`/api/posts/${post.id}/pin`, {
           method: "POST",
         });
-        if (res.ok) setIsPinned(true);
+        if (res.ok) {
+          setIsPinned(true);
+          toast({ description: "Post fijado en el perfil." });
+        }
       }
     } catch (error) {
       console.error(error);
+      toast({
+        variant: "destructive",
+        description: "Error al actualizar el estado de fijación.",
+      });
     } finally {
       setIsPinLoading(false);
     }

@@ -10,18 +10,18 @@ const adapter = new PrismaAdapter(prisma.session, prisma.user);
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
     expires: false,
-    attributes: {
-      secure: process.env.NODE_ENV === "production",
-    },
+    attributes: { secure: process.env.NODE_ENV === "production" },
   },
   getUserAttributes(databaseUserAttributes) {
     return {
       id: databaseUserAttributes.id,
       username: databaseUserAttributes.username,
+      email: databaseUserAttributes.email,
       displayName: databaseUserAttributes.displayName,
       avatarUrl: databaseUserAttributes.avatarUrl,
       coverUrl: databaseUserAttributes.coverUrl,
       googleId: databaseUserAttributes.googleId,
+      verified: databaseUserAttributes.verified,
     };
   },
 });
@@ -36,10 +36,12 @@ declare module "lucia" {
 interface DatabaseUserAttributes {
   id: string;
   username: string;
+  email: string;
   displayName: string;
   avatarUrl: string | null;
   coverUrl: string | null;
   googleId: string | null;
+  verified: boolean;
 }
 
 export const google = new Google(
@@ -55,10 +57,7 @@ export const validateRequest = cache(
     const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
 
     if (!sessionId) {
-      return {
-        user: null,
-        session: null,
-      };
+      return { user: null, session: null };
     }
 
     const result = await lucia.validateSession(sessionId);

@@ -14,10 +14,7 @@ interface UserMediaProps {
 }
 
 interface PinnedPost {
-  post: {
-    id: string;
-    attachments: { url: string; type?: string }[];
-  };
+  post: { id: string; attachments: { url: string; type?: string }[] };
 }
 
 export default function UserMedia({ userId }: UserMediaProps) {
@@ -41,12 +38,18 @@ export default function UserMedia({ userId }: UserMediaProps) {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 
-  const { data: pinnedPosts } = useQuery<PinnedPost[]>({
+  const { data: pinnedPosts, isLoading: isPinnedLoading } = useQuery<
+    PinnedPost[]
+  >({
     queryKey: ["pinned-posts", userId],
     queryFn: async () => {
       return kyInstance.get(`/api/users/${userId}/pins`).json();
     },
   });
+
+  if (status === "pending" || isPinnedLoading) {
+    return <UserMediaLoadingSkeleton />;
+  }
 
   const postsWithMedia =
     data?.pages
@@ -59,10 +62,6 @@ export default function UserMedia({ userId }: UserMediaProps) {
     ...postsWithMedia.filter((post) => pinnedPostIds.includes(post.id)),
     ...postsWithMedia.filter((post) => !pinnedPostIds.includes(post.id)),
   ];
-
-  if (status === "pending") {
-    return <UserMediaLoadingSkeleton />;
-  }
 
   if (
     status === "success" &&

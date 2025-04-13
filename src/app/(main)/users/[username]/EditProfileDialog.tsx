@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { UserData } from "@/lib/types";
 import {
   updateUserProfileSchema,
@@ -48,7 +47,13 @@ export default function EditProfileDialog({
     resolver: zodResolver(updateUserProfileSchema),
     defaultValues: {
       displayName: user.displayName,
-      bio: user.bio || "",
+      residenceCity: user.residenceCity || "",
+      birthCity: user.birthCity || "",
+      maritalStatus: user.maritalStatus || "",
+      customLinkText: user.customLinkText || "",
+      customLinkUrl: user.customLinkUrl || "",
+      studyPlace: user.studyPlace || "",
+      workPlace: user.workPlace || "",
     },
   });
 
@@ -84,40 +89,45 @@ export default function EditProfileDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>Editar perfil</DialogTitle>
         </DialogHeader>
-        <div className="space-y-1.5">
-          <Label>Avatar</Label>
-          <AvatarInput
-            src={
-              croppedAvatar
-                ? URL.createObjectURL(croppedAvatar)
-                : user.avatarUrl || avatarPlaceholder
-            }
-            onImageCropped={setCroppedAvatar}
-          />
-        </div>
-        <div className="space-y-1.5">
-          <Label>Portada</Label>
-          <CoverInput
-            src={
-              croppedCover
-                ? URL.createObjectURL(croppedCover)
-                : user.coverUrl || coverPlaceholder
-            }
-            onImageCropped={setCroppedCover}
-          />
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+          <div className="w-full space-y-1.5 lg:w-1/3">
+            <Label>Avatar</Label>
+            <AvatarInput
+              src={
+                croppedAvatar
+                  ? URL.createObjectURL(croppedAvatar)
+                  : user.avatarUrl || avatarPlaceholder
+              }
+              onImageCropped={setCroppedAvatar}
+            />
+          </div>
+          <div className="w-full space-y-1.5 lg:w-2/3">
+            <Label>Portada</Label>
+            <CoverInput
+              src={
+                croppedCover
+                  ? URL.createObjectURL(croppedCover)
+                  : user.coverUrl || coverPlaceholder
+              }
+              onImageCropped={setCroppedCover}
+            />
+          </div>
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid grid-cols-2 gap-4 lg:grid-cols-3"
+          >
             <FormField
               control={form.control}
               name="displayName"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="sm:col-span-2">
                   <FormLabel>Nombre a mostrar</FormLabel>
                   <FormControl>
                     <Input placeholder="Tu nombre..." {...field} />
@@ -126,16 +136,58 @@ export default function EditProfileDialog({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name="bio"
+              name="residenceCity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bio</FormLabel>
+                  <FormLabel>Ciudad de residencia</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Cuéntanos algo sobre ti..."
-                      className="resize-none"
+                    <Input placeholder="Ej: Bogotá" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="birthCity"
+              render={({ field }) => (
+                <FormItem className="lg:col-span-1">
+                  <FormLabel>Ciudad de origen</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ej: Cali" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="maritalStatus"
+              render={({ field }) => (
+                <FormItem className="lg:col-span-1">
+                  <FormLabel>Estado civil</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ej: Soltero" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="studyPlace"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Lugar de estudio (Opcional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Universidad, colegio, etc."
                       {...field}
                     />
                   </FormControl>
@@ -143,7 +195,53 @@ export default function EditProfileDialog({
                 </FormItem>
               )}
             />
-            <DialogFooter>
+
+            <FormField
+              control={form.control}
+              name="workPlace"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Lugar de trabajo (Opcional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Empresa, organización, etc."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="customLinkText"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Texto del enlace</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Mi portafolio" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="customLinkUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL del enlace</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://ejemplo.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter className="sm:col-span-2 lg:col-span-3">
               <LoadingButton type="submit" loading={mutation.isPending}>
                 Guardar
               </LoadingButton>

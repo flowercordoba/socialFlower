@@ -14,6 +14,7 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import UserAvatar from "./UserAvatar";
+import { BadgeCheck } from "lucide-react";
 
 interface UserTooltipProps extends PropsWithChildren {
   user: UserData;
@@ -25,7 +26,8 @@ export default function UserTooltip({ children, user }: UserTooltipProps) {
   const followerState: FollowerInfo = {
     followers: user._count.followers,
     isFollowedByUser: !!user.followers.some(
-      ({ followerId }) => followerId === loggedInUser.id,
+      ({ followerId }: { followerId: string }) =>
+        followerId === loggedInUser.id,
     ),
   };
 
@@ -45,8 +47,20 @@ export default function UserTooltip({ children, user }: UserTooltipProps) {
             </div>
             <div>
               <Link href={`/users/${user.username}`}>
-                <div className="text-lg font-semibold hover:underline">
-                  {user.displayName}
+                <div className="flex items-center gap-1">
+                  <div className="text-lg font-semibold hover:underline">
+                    {user.displayName}
+                  </div>
+                  {(user.id === loggedInUser.id || user.verified) && (
+                    <BadgeCheck
+                      className={
+                        user.verified
+                          ? "fill-primary text-white dark:text-primary-foreground"
+                          : "fill-gray-400 text-white dark:text-gray-400/50"
+                      }
+                      size={24}
+                    />
+                  )}
                 </div>
                 <div className="text-muted-foreground">@{user.username}</div>
               </Link>

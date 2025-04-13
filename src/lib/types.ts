@@ -8,21 +8,20 @@ export function getUserDataSelect(loggedInUserId: string) {
     avatarUrl: true,
     coverUrl: true,
     bio: true,
+    verified: true,
+    residenceCity: true,
+    birthCity: true,
+    maritalStatus: true,
+    customLinkUrl: true,
+    customLinkText: true,
+    studyPlace: true,
+    workPlace: true,
     createdAt: true,
     followers: {
-      where: {
-        followerId: loggedInUserId,
-      },
-      select: {
-        followerId: true,
-      },
+      where: { followerId: loggedInUserId },
+      select: { followerId: true },
     },
-    _count: {
-      select: {
-        posts: true,
-        followers: true,
-      },
-    },
+    _count: { select: { posts: true, followers: true } },
   } satisfies Prisma.UserSelect;
 }
 
@@ -32,32 +31,11 @@ export type UserData = Prisma.UserGetPayload<{
 
 export function getPostDataInclude(loggedInUserId: string) {
   return {
-    user: {
-      select: getUserDataSelect(loggedInUserId),
-    },
+    user: { select: getUserDataSelect(loggedInUserId) },
     attachments: true,
-    likes: {
-      where: {
-        userId: loggedInUserId,
-      },
-      select: {
-        userId: true,
-      },
-    },
-    bookmarks: {
-      where: {
-        userId: loggedInUserId,
-      },
-      select: {
-        userId: true,
-      },
-    },
-    _count: {
-      select: {
-        likes: true,
-        comments: true,
-      },
-    },
+    likes: { where: { userId: loggedInUserId }, select: { userId: true } },
+    bookmarks: { where: { userId: loggedInUserId }, select: { userId: true } },
+    _count: { select: { likes: true, comments: true } },
   } satisfies Prisma.PostInclude;
 }
 
@@ -72,9 +50,7 @@ export interface PostsPage {
 
 export function getCommentDataInclude(loggedInUserId: string) {
   return {
-    user: {
-      select: getUserDataSelect(loggedInUserId),
-    },
+    user: { select: getUserDataSelect(loggedInUserId) },
   } satisfies Prisma.CommentInclude;
 }
 
@@ -88,18 +64,8 @@ export interface CommentsPage {
 }
 
 export const notificationsInclude = {
-  issuer: {
-    select: {
-      username: true,
-      displayName: true,
-      avatarUrl: true,
-    },
-  },
-  post: {
-    select: {
-      content: true,
-    },
-  },
+  issuer: { select: { username: true, displayName: true, avatarUrl: true } },
+  post: { select: { content: true } },
 } satisfies Prisma.NotificationInclude;
 
 export type NotificationData = Prisma.NotificationGetPayload<{

@@ -28,6 +28,19 @@ export const createPostSchema = z.object({
 export const updateUserProfileSchema = z.object({
   displayName: requiredString,
   bio: z.string().max(1000, "Must be at most 1000 characters"),
+  residenceCity: z.string().trim().optional(),
+  birthCity: z.string().trim().optional(),
+  maritalStatus: z.string().trim().optional(),
+  customLinkText: z.string().trim().optional(),
+  customLinkUrl: z
+    .string()
+    .trim()
+    .optional()
+    .refine((val) => !val || val.startsWith("http"), {
+      message: "La URL debe comenzar con http:// o https://",
+    }),
+  studyPlace: z.string().trim().optional(),
+  workPlace: z.string().trim().optional(),
 });
 
 export type UpdateUserProfileValues = z.infer<typeof updateUserProfileSchema>;

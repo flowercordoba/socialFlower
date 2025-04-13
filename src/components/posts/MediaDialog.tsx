@@ -52,8 +52,7 @@ export default function MediaDialog({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="h-full max-w-7xl border-none p-0">
         <div className="flex h-full w-full flex-col sm:flex-row">
-          {/* Panel Multimedia */}
-          <div className="relative flex h-full w-full items-center justify-center rounded-none bg-black/70 sm:w-2/3">
+          <div className="relative flex h-full w-full items-center justify-center rounded-none sm:w-2/3">
             {attachment && attachment.type === "IMAGE" ? (
               <Image
                 src={attachment.url}
@@ -90,7 +89,7 @@ export default function MediaDialog({
               </>
             )}
           </div>
-          <div className="hidden flex-col space-y-4 overflow-y-auto bg-card p-4 sm:flex sm:w-1/3">
+          <div className="hidden flex-col space-y-4 overflow-y-auto rounded-lg bg-card p-4 sm:flex sm:w-1/3">
             <div className="mb-4 flex items-center gap-3">
               <UserAvatar avatarUrl={post.user.avatarUrl} />
               <div>

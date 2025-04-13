@@ -9,10 +9,12 @@ import Link from "next/link";
 
 interface NotificationsButtonProps {
   initialState: NotificationCountInfo;
+  iconOnly?: boolean;
 }
 
 export default function NotificationsButton({
   initialState,
+  iconOnly,
 }: NotificationsButtonProps) {
   const { data } = useQuery({
     queryKey: ["unread-notification-count"],
@@ -40,7 +42,7 @@ export default function NotificationsButton({
             </span>
           )}
         </div>
-        <span className="hidden lg:inline">Notificaciones</span>
+        {!iconOnly && <span className="hidden lg:inline">Notificaciones</span>}
       </Link>
     </Button>
   );
